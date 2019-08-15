@@ -36,9 +36,9 @@ function init() {
         {src:"img/background.png", id:"background"},
         {src:"img/ground.png", id:"ground"},
         {src:"img/pipe.png", id:"pipe"},
-        {src:"img/restart.png", id:"start"},
-        {src:"img/share.png", id:"share"},
-        {src:"img/exit.png", id:"exit"}
+        {src:"img/restart_kh.png", id:"start"},
+        {src:"img/share_kh.png", id:"share"},
+        {src:"img/exit_kh.png", id:"exit"}
     ];
 
     loader = new createjs.LoadQueue(false);
