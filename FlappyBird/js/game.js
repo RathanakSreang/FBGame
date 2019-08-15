@@ -21,15 +21,12 @@ function init() {
         document.getElementById("header").style.display = "none";
     }
 
-
-    // createjs.MotionGuidePlugin.install();
-
-    stage = new createjs.Stage("testCanvas");
-
+    stage = new createjs.Stage("gameCanvas");
     createjs.Touch.enable(stage);
     // stage.canvas.width = document.body.clientWidth; //document.width is obsolete
     // stage.canvas.height = document.body.clientHeight; //document.height is obsolete
-
+    stage.canvas.width = window.innerWidth;
+    stage.canvas.height = window.innerHeight;
     // grab canvas width and height for later calculations:
     w = stage.canvas.width;
     h = stage.canvas.height;
@@ -40,7 +37,8 @@ function init() {
         {src:"img/ground.png", id:"ground"},
         {src:"img/pipe.png", id:"pipe"},
         {src:"img/restart.png", id:"start"},
-        {src:"img/share.png", id:"share"}
+        {src:"img/share.png", id:"share"},
+        {src:"img/exit.png", id:"exit"}
     ];
 
     loader = new createjs.LoadQueue(false);
@@ -169,20 +167,32 @@ function die() {
     share.alpha = 0
     share.x = w/2 - share.image.width/2
     share.y = h/2 - share.image.height/2 - 50
+    exit = new createjs.Bitmap(loader.getResult("exit"));
+    exit.alpha = 0
+    exit.x = w/2 - share.image.width/2
+    exit.y = h/2 - share.image.height/2 + 50
 
     stage.addChild(start)
     stage.addChild(share)
+    stage.addChild(exit)
     createjs.Tween.get(start).to({alpha:1, y: start.y + 50}, 400, createjs.Ease.sineIn).call(addClickToStart)
     createjs.Tween.get(share).to({alpha:1, y: share.y + 50}, 400, createjs.Ease.sineIn).call(addClickToStart)
+    createjs.Tween.get(exit).to({alpha:1, y: exit.y + 50}, 400, createjs.Ease.sineIn).call(addClickToStart)
 
 }
 function removeStart() {
     stage.removeChild(start)
     stage.removeChild(share)
+    stage.removeChild(exit)
 }
 function addClickToStart() {
     start.addEventListener("click", restart);
     share.addEventListener("click", goShare);
+    exit.addEventListener("click", exitApp);
+}
+
+function exitApp() {
+  FBInstant.quit();
 }
 
 function goShare() {
@@ -198,7 +208,7 @@ function goShare() {
 function tick(event) {
     var deltaS = event.delta/1000;
 
-    var l = pipes.getNumChildren();
+    var l = pipes.numChildren;
 
     if (bird.y > (ground.y - 40)) {
         if (!dead) {
@@ -292,39 +302,4 @@ function tick(event) {
 
 
     stage.update(event);
-}
-
-window.onload = function() {
-  // init();
-
-  // When the window loads, start to initialize the SDK
-  FBInstant.initializeAsync().then(function() {
-
-    // We can start to load assets
-    for (let i in assets) {
-      // When preloading assets, make sure to report the progress
-      FBInstant.setLoadingProgress(i / assets.length * 100);
-    }
-
-    // Now that assets are loaded, call startGameAsync
-    FBInstant.startGameAsync().then(onStart);
-  });
-};
-
-function onStart() {
-  // This is called when the user has tapped Play
-  // Information from the SDK can now be accessed
-
-  $('#photo').attr('src', FBInstant.player.getPhoto());
-  $('#player-name').html(FBInstant.player.getName());
-  $('#player-id').html(FBInstant.player.getID());
-  $('#context-type').html(FBInstant.context.getType());
-
-  try{
-    $('#entrypointdata').html(JSON.stringify(FBInstant.getEntryPointData()));
-  }catch(e){
-    console.log(e);
-  }
-
-  // init();
 }

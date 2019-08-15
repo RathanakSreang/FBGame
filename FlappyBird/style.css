@@ -11,10 +11,13 @@
 body, html {
   margin: 0px;
   padding: 0px;
-  text-align: center;
   height: 100%;
+  overflow: hidden;
+}
+
+body {
+  text-align: center;
 }
 canvas {
-  margin-bottom: -4px;
   height: 100%;
 }
