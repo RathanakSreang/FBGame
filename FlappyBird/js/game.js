@@ -17,10 +17,6 @@ var counterShow = false;
 document.onkeydown = handleKeyDown;
 
 function init() {
-    if (window.top != window) {
-        document.getElementById("header").style.display = "none";
-    }
-
     stage = new createjs.Stage("gameCanvas");
     createjs.Touch.enable(stage);
     // stage.canvas.width = document.body.clientWidth; //document.width is obsolete
