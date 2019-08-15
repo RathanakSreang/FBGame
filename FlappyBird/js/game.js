@@ -202,7 +202,14 @@ function goShare() {
     } else {
         countText = counter.text + " points"
     }
-    window.open("https://twitter.com/share?url=http%3A%2F%2Fmaxmcd.com%2Ffb%2F&text=I scored " + countText +  " on HTML5 Flappy Bird.");
+    FBInstant.shareAsync({
+      intent: 'SHARE',
+      text: "User got " + countText +  " on HTML5 Flappy Bird.",
+    }).then(function() {
+      // continue with the game.
+    });
+
+    // window.open("https://fb.gg/play/466260074169181");
 }
 
 function tick(event) {
