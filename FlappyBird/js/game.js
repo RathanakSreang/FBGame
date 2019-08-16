@@ -21,9 +21,11 @@ function init() {
     createjs.Touch.enable(stage);
     // stage.canvas.width = document.body.clientWidth; //document.width is obsolete
     // stage.canvas.height = document.body.clientHeight; //document.height is obsolete
-    stage.canvas.width = window.innerWidth;
-    stage.canvas.height = window.innerHeight;
+    //stage.canvas.width = window.innerWidth;
+    //stage.canvas.height = window.innerHeight;
+
     // grab canvas width and height for later calculations:
+    
     w = stage.canvas.width;
     h = stage.canvas.height;
 
@@ -175,12 +177,20 @@ function die() {
     createjs.Tween.get(share).to({alpha:1, y: share.y + 50}, 400, createjs.Ease.sineIn).call(addClickToStart)
     createjs.Tween.get(exit).to({alpha:1, y: exit.y + 50}, 400, createjs.Ease.sineIn).call(addClickToStart)
 
+    FBInstant.getLeaderboardAsync('Testing2')
+    .then(function(leaderboard) {
+        return leaderboard.setScoreAsync(counter.text);
+    })
+    .then(function(entry) {
+    });
+
 }
 function removeStart() {
     stage.removeChild(start)
     stage.removeChild(share)
     stage.removeChild(exit)
 }
+
 function addClickToStart() {
     start.addEventListener("click", restart);
     share.addEventListener("click", goShare);
@@ -198,8 +208,11 @@ function goShare() {
     } else {
         countText = counter.text + " points"
     }
+
+    showLeaderBoard();
+
     FBInstant.shareAsync({
-      intent: 'SHARE',
+      intent: 'REQUEST',
       text: "User got " + countText +  " on HTML5 Flappy Bird.",
     }).then(function() {
       // continue with the game.

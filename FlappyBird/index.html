@@ -5,7 +5,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="full-screen" content="yes"/>
   <meta name="screen-orientation" content="portrait"/>
-  <meta name="viewport" content="user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="style.css">
   <script src="js/createjs.min.js"></script>
   <script src="js/ndgmr.Collision.js"></script>
@@ -13,12 +13,55 @@
   <!-- build:js -->
   <script src="https://www.facebook.com/assets.php/en_US/fbinstant.latest.js"></script>
   <!-- endbuild -->
+
+  <style>
+    #leaderboard {
+      position: fixed;
+      width: 200px;
+      height: 300px;
+      background: #fff;
+      z-index: 999;
+      top: 50%;
+      left: 50%;
+      margin-left: -100px;
+      margin-top: -150px;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      overflow: auto;
+      display: none;
+    }
+
+    table {
+      font-size: 20px;
+      width: 100%;
+      text-align: left;
+    }
+
+    table td {
+      padding: 10px;
+    }
+
+    table td:nth-child(2)  {
+      width: 20px;
+    }
+
+    button {
+      padding: 10px;
+      background: #f1f1f1;
+      border: none;
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
   <script type="text/javascript">
+    console.log('Starting...');
+
     window.onload = function() {
       init();
+
       // When the window loads, start to initialize the SDK
       FBInstant.initializeAsync().then(function() {
         FBInstant.setLoadingProgress(1 * 100);
@@ -26,9 +69,52 @@
         FBInstant.startGameAsync().then(onStart);
       });
     };
+
     function onStart() {
       init();
     }
+
+    function showLeaderBoard() {
+      FBInstant
+      .getLeaderboardAsync('Testing2')
+      .then(leaderboard => leaderboard.getEntriesAsync(10, 0))
+      .then(entries => {
+        // Clearing the old table
+        document.querySelector('#leaderboard table').innerHTML = '';
+
+        let leaderHTML = '';
+
+        for (var i = 0; i < entries.length; i++) {
+          leaderHTML += `
+            <tr>
+              <td>${entries[i].getPlayer().getName()}</td>
+              <td>${entries[i].getScore()}</td>
+            </td>
+          `
+        }
+
+        document.getElementById('leaderboard').style.display = 'block';
+        document.querySelector('table').innerHTML = '<tbody>' + leaderHTML  + '</tbody>';
+      }).catch(error => console.error(error));
+    }
+
+    function hideLeaderBoard() {
+      document.getElementById('leaderboard').style.display = 'none';
+    }
   </script>
-  <canvas id="gameCanvas" width="500" height="800"></canvas>
+
+  <canvas id="gameCanvas" width="500" height="800" style='width:100%; height: 100%;'></canvas>
+
+  <div id='leaderboard'>
+    <table>
+      <tbody>
+        <tr>
+          <td>Visal</td>
+          <td>10</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button onclick='hideLeaderBoard()'>Close</button>
+  </div>
 </body>
